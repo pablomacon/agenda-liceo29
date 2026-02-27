@@ -89,30 +89,47 @@
                 class="form-select border-2"
                 id="selectorAmbito"
               >
-                <option value="GRUPO">Trabajo con Grupos</option>
-                <option value="TALLER">Taller / Charla</option>
-                <option value="EXAMEN">Instancia de Examen</option>
-                <option value="OTRO">Otro (Reunión, Coordinación)</option>
+                <option value="INSTITUCIONAL">
+                  🏛️ Institucional (Goyenadas, Fiestas)
+                </option>
+                <option value="DOCENTE">👨‍🏫 Docente (Reuniones, Coord.)</option>
+                <option value="GRUPAL">👥 Grupal (Actividad con Grupos)</option>
+                <option value="TALLER">🎨 Taller / Salida Didáctica</option>
+                <option value="ED_FISICA">⚽ Educación Física / Deporte</option>
+                <option value="EVALUACION">📝 Evaluación / Parciales</option>
               </select>
             </div>
 
             <div class="col-md-8" id="divGrupos">
-              <label class="form-label fw-bold">Seleccionar Grupo(s)</label>
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <label class="form-label fw-bold mb-0"
+                  >Seleccionar Grupo(s)</label
+                >
+                <button
+                  type="button"
+                  id="btnTodos"
+                  class="btn btn-outline-primary btn-sm"
+                >
+                  <i class="bi bi-check-all"></i> Marcar todos
+                </button>
+              </div>
               <div
                 class="p-3 border rounded bg-white"
-                style="max-height: 200px; overflow-y: auto"
+                style="max-height: 250px; overflow-y: auto"
               >
                 <div class="row">
                   <div class="col-6 border-end">
-                    <small class="text-muted d-block mb-2 fw-bold"
-                      >Ciclo Básico (M)</small
+                    <small class="text-muted d-block mb-2 fw-bold border-bottom"
+                      >Matutino (1° a 3°)</small
                     >
                     <div
                       th:each="g : ${ {'7°1', '7°2', '7°3', '8°1', '8°2', '8°3', '9°1', '9°2', '9°3', '9°4'} }"
                       class="form-check small"
                     >
                       <input
-                        class="form-check-input"
+                        class="form-check-input check-grupo"
                         type="checkbox"
                         name="gruposArr"
                         th:value="${g}"
@@ -126,15 +143,15 @@
                     </div>
                   </div>
                   <div class="col-6">
-                    <small class="text-muted d-block mb-2 fw-bold"
-                      >Ciclo Básico (V)</small
+                    <small class="text-muted d-block mb-2 fw-bold border-bottom"
+                      >Vespertino (4° a 7°)</small
                     >
                     <div
-                      th:each="g : ${ {'1°1', '1°2', '1°3', '1°4', '2°1', '2°2', '2°3', '2°4', '3°1', '3°2', '3°3'} }"
+                      th:each="g : ${ {'7°4', '7°5', '7°6', '8°4', '8°5', '8°6', '8°7', '9°5', '9°6', '9°7'} }"
                       class="form-check small"
                     >
                       <input
-                        class="form-check-input"
+                        class="form-check-input check-grupo"
                         type="checkbox"
                         name="gruposArr"
                         th:value="${g}"
@@ -160,7 +177,7 @@
                 name="inputOtros"
                 id="inputOtros"
                 class="form-control"
-                placeholder="Ej: Sala de Informática, APAL"
+                placeholder="Ej: Sala de Informática, APAL, Todos los docentes"
               />
             </div>
 
@@ -193,7 +210,7 @@
 
             <div class="col-md-4">
               <label for="fechaInicio" class="form-label fw-bold text-success"
-                >Fecha y Hora de Inicio</label
+                >Inicio</label
               >
               <input
                 type="datetime-local"
@@ -206,7 +223,7 @@
 
             <div class="col-md-4">
               <label for="fechaFin" class="form-label fw-bold text-danger"
-                >Fecha y Hora de Fin</label
+                >Fin</label
               >
               <input
                 type="datetime-local"
@@ -246,26 +263,42 @@
     </main>
 
     <script th:inline="javascript">
-      // Lógica para alternar entre selección de grupos o texto libre
-      function actualizarCamposDestinatarios() {
-        const ambito = document.getElementById("selectorAmbito").value;
-        const divGrupos = document.getElementById("divGrupos");
-        const divOtros = document.getElementById("divOtros");
+      const selectorAmbito = document.getElementById("selectorAmbito");
+      const divGrupos = document.getElementById("divGrupos");
+      const divOtros = document.getElementById("divOtros");
+      const btnTodos = document.getElementById("btnTodos");
+      const checks = document.querySelectorAll(".check-grupo");
 
-        if (ambito === "GRUPO") {
+      // Lógica para alternar campos según ámbito
+      function actualizarCamposDestinatarios() {
+        const val = selectorAmbito.value;
+        // Si es GRUPAL, ED_FISICA o EVALUACION, mostramos la lista de grupos
+        if (val === "GRUPAL" || val === "ED_FISICA" || val === "EVALUACION") {
           divGrupos.classList.remove("d-none");
           divOtros.classList.add("d-none");
         } else {
+          // Si es Institucional o Docente, permitimos texto libre
           divGrupos.classList.add("d-none");
           divOtros.classList.remove("d-none");
         }
       }
 
+      // Lógica del botón "Marcar Todos"
+      btnTodos.addEventListener("click", function () {
+        // Verificamos si ya hay alguno marcado para decidir si marcar o desmarcar todos
+        const algunoMarcado = Array.from(checks).some((c) => c.checked);
+        checks.forEach((c) => (c.checked = !algunoMarcado));
+        this.innerHTML = !algunoMarcado
+          ? '<i class="bi bi-x-square"></i> Desmarcar todos'
+          : '<i class="bi bi-check-all"></i> Marcar todos';
+      });
+
       document.addEventListener("DOMContentLoaded", function () {
         actualizarCamposDestinatarios();
-        document
-          .getElementById("selectorAmbito")
-          .addEventListener("change", actualizarCamposDestinatarios);
+        selectorAmbito.addEventListener(
+          "change",
+          actualizarCamposDestinatarios,
+        );
       });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
