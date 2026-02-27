@@ -1,0 +1,252 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda Liceo 29 - Alicia Goyena</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}" />
+  </head>
+  <body>
+    <header class="navbar-institucional">
+      <div class="header-container">
+        <div class="branding-block">
+          <img
+            th:src="@{/img/logo_Liceo_29.jpg}"
+            alt="Logo L29"
+            class="logo-liceo-img"
+          />
+          <div class="divider-vertical"></div>
+          <img
+            th:src="@{/img/Logo_Secundaria.png}"
+            alt="DGES"
+            class="logo-secundaria-header"
+          />
+        </div>
+
+        <div class="titulo-liceo-central">
+          <h1>Liceo N°29</h1>
+          <span class="badge-alicia">Alicia Goyena</span>
+        </div>
+
+        <div class="portrait-block">
+          <img
+            th:src="@{/img/Alicia_goyena.png}"
+            alt="Alicia Goyena"
+            class="img-alicia-header"
+          />
+        </div>
+      </div>
+    </header>
+
+    <main class="container mt-5">
+      <div class="card-calendario-wrapper">
+        <div
+          class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center"
+        >
+          <div>
+            <h2 class="h5 mb-0 text-verde">
+              <i class="bi bi-calendar-event"></i> Gestión de Espacios
+            </h2>
+          </div>
+
+          <div class="d-flex gap-3 align-items-center">
+            <div sec:authorize="isAnonymous()">
+              <a th:href="@{/login}" class="btn btn-outline-success btn-sm"
+                >Ingresar</a
+              >
+            </div>
+
+            <div
+              sec:authorize="isAuthenticated()"
+              class="d-flex align-items-center gap-3"
+            >
+              <span class="small fw-bold" style="color: var(--verde-liceo)">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">Usuario</span>
+              </span>
+              <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  Salir
+                </button>
+              </form>
+              <a th:href="@{/eventos/nuevo}" class="btn btn-liceo shadow-sm">
+                <i class="bi bi-plus-lg"></i> Nuevo Evento
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div id="calendar"></div>
+      </div>
+    </main>
+
+    <div
+      class="modal fade"
+      id="eventoModal"
+      tabindex="-1"
+      aria-labelledby="modalTitulo"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div
+            class="modal-header text-white"
+            style="background-color: var(--verde-liceo)"
+          >
+            <h5 class="modal-title" id="modalTitulo">Detalles del Evento</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <p>
+              <strong><i class="bi bi-geo-alt text-verde"></i> Lugar:</strong>
+              <span id="modalLugar"></span>
+            </p>
+            <p>
+              <strong
+                ><i class="bi bi-people text-verde"></i> Destinatarios:</strong
+              >
+              <span id="modalDestino"></span>
+            </p>
+            <p>
+              <strong><i class="bi bi-clock text-verde"></i> Horario:</strong>
+              <span id="modalHorario"></span>
+            </p>
+            <hr />
+            <p class="mb-0 text-muted small text-end">
+              Registrado por: <span id="modalCreador"></span>
+            </p>
+          </div>
+          <div class="modal-footer bg-light">
+            <form id="formEliminar" method="post" style="display: inline">
+              <button
+                type="submit"
+                id="btnEliminar"
+                class="btn btn-danger d-none"
+              >
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+            </form>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        // Variables de seguridad inyectadas por Thymeleaf
+        /*[+
+            const usuarioLogueadoId = [[${#authentication.principal instanceof T(com.liceo.agenda.service.CustomUserDetails) ? #authentication.principal.id : null}]];
+            const esAdmin = [[${#authorization.expression('hasRole("ROLE_ADMIN")')}]];
+            +]*/
+
+        const calendarEl = document.getElementById("calendar");
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "timeGridWeek",
+          locale: "es",
+          firstDay: 7,
+          slotMinTime: "07:30:00",
+          slotMaxTime: "21:30:00",
+          allDaySlot: false,
+          buttonText: {
+            today: "Hoy",
+            month: "Mes",
+            week: "Semana",
+            day: "Día",
+            list: "Lista",
+          },
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+          },
+          events: "/api/eventos",
+
+          eventClick: function (info) {
+            const evento = info.event;
+            const props = evento.extendedProps;
+
+            // Llenar datos en el modal
+            document.getElementById("modalTitulo").innerText = evento.title;
+            document.getElementById("modalLugar").innerText =
+              props.lugar || "No especificado";
+            document.getElementById("modalDestino").innerText =
+              props.destinatarios || "General";
+            document.getElementById("modalCreador").innerText =
+              props.usuarioNombre || "No disponible";
+
+            const opciones = {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            };
+            document.getElementById("modalHorario").innerText =
+              evento.start.toLocaleString("es-ES", opciones) +
+              (evento.end
+                ? " a " + evento.end.toLocaleString("es-ES", opciones)
+                : "");
+
+            // Configurar botón eliminar
+            const formEliminar = document.getElementById("formEliminar");
+            formEliminar.action = "/eventos/eliminar/" + evento.id;
+
+            const btnEliminar = document.getElementById("btnEliminar");
+            const creadorId = props.usuarioId;
+
+            if (
+              esAdmin === true ||
+              (usuarioLogueadoId !== null && usuarioLogueadoId == creadorId)
+            ) {
+              btnEliminar.classList.remove("d-none");
+            } else {
+              btnEliminar.classList.add("d-none");
+            }
+
+            // Lanzar el modal de Bootstrap 5 de forma segura
+            const modalElement = document.getElementById("eventoModal");
+            const modalInstance =
+              bootstrap.Modal.getOrCreateInstance(modalElement);
+            modalInstance.show();
+          },
+        });
+
+        calendar.render();
+      });
+    </script>
+  </body>
+</html>

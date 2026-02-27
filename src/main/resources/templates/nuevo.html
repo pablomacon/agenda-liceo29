@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nueva Actividad - Liceo 29</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/estilos.css}" />
+  </head>
+  <body>
+    <header class="navbar-institucional">
+      <div class="header-container">
+        <div class="branding-block">
+          <img
+            th:src="@{/img/logo_Liceo_29.jpg}"
+            alt="Logo L29"
+            class="logo-liceo-img"
+          />
+          <div class="divider-vertical"></div>
+          <img
+            th:src="@{/img/Logo_Secundaria.png}"
+            alt="DGES"
+            class="logo-secundaria-header"
+          />
+        </div>
+
+        <div class="titulo-liceo-central">
+          <h1>Liceo N°29</h1>
+          <span class="badge-alicia">Alicia Goyena</span>
+        </div>
+
+        <div class="portrait-block">
+          <img
+            th:src="@{/img/Alicia_goyena.png}"
+            alt="Alicia Goyena"
+            class="img-alicia-header"
+          />
+        </div>
+      </div>
+    </header>
+
+    <main class="container mt-5">
+      <div class="card-calendario-wrapper">
+        <div class="p-4 border-bottom bg-light">
+          <h2 class="h4 mb-0 text-verde">
+            <i class="bi bi-calendar-plus-fill"></i> Registro de Nueva Actividad
+          </h2>
+          <p class="text-muted mb-0 small">
+            Complete todos los datos requeridos por la administración.
+          </p>
+        </div>
+
+        <form
+          th:action="@{/eventos/guardar}"
+          th:object="${evento}"
+          method="post"
+          class="p-4"
+          id="formEvento"
+        >
+          <div class="row g-4">
+            <div class="col-md-8">
+              <label for="titulo" class="form-label fw-bold"
+                >Título de la Actividad / Tema</label
+              >
+              <input
+                type="text"
+                th:field="*{titulo}"
+                class="form-control form-control-lg border-2"
+                id="titulo"
+                placeholder="Ej: Clase Abierta de Historia"
+                required
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label for="selectorAmbito" class="form-label fw-bold"
+                >Ámbito</label
+              >
+              <select
+                th:field="*{ambito}"
+                class="form-select border-2"
+                id="selectorAmbito"
+              >
+                <option value="GRUPO">Trabajo con Grupos</option>
+                <option value="TALLER">Taller / Charla</option>
+                <option value="EXAMEN">Instancia de Examen</option>
+                <option value="OTRO">Otro (Reunión, Coordinación)</option>
+              </select>
+            </div>
+
+            <div class="col-md-8" id="divGrupos">
+              <label class="form-label fw-bold">Seleccionar Grupo(s)</label>
+              <div
+                class="p-3 border rounded bg-white"
+                style="max-height: 200px; overflow-y: auto"
+              >
+                <div class="row">
+                  <div class="col-6 border-end">
+                    <small class="text-muted d-block mb-2 fw-bold"
+                      >Ciclo Básico (M)</small
+                    >
+                    <div
+                      th:each="g : ${ {'7°1', '7°2', '7°3', '8°1', '8°2', '8°3', '9°1', '9°2', '9°3', '9°4'} }"
+                      class="form-check small"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="gruposArr"
+                        th:value="${g}"
+                        th:id="'check'+${g}"
+                      />
+                      <label
+                        class="form-check-label"
+                        th:for="'check'+${g}"
+                        th:text="${g}"
+                      ></label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block mb-2 fw-bold"
+                      >Ciclo Básico (V)</small
+                    >
+                    <div
+                      th:each="g : ${ {'1°1', '1°2', '1°3', '1°4', '2°1', '2°2', '2°3', '2°4', '3°1', '3°2', '3°3'} }"
+                      class="form-check small"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="gruposArr"
+                        th:value="${g}"
+                        th:id="'check'+${g}"
+                      />
+                      <label
+                        class="form-check-label"
+                        th:for="'check'+${g}"
+                        th:text="${g}"
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-8 d-none" id="divOtros">
+              <label for="inputOtros" class="form-label fw-bold"
+                >Especificar Destinatarios</label
+              >
+              <input
+                type="text"
+                name="inputOtros"
+                id="inputOtros"
+                class="form-control"
+                placeholder="Ej: Sala de Informática, APAL"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="cantidad" class="form-label fw-bold"
+                  >Cantidad de Estudiantes</label
+                >
+                <input
+                  type="number"
+                  th:field="*{cantidadEstudiantes}"
+                  class="form-control"
+                  id="cantidad"
+                  min="0"
+                  value="0"
+                />
+              </div>
+              <div class="form-check form-switch mt-4">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  th:field="*{participanTodos}"
+                  id="participanTodos"
+                />
+                <label class="form-check-label fw-bold" for="participanTodos"
+                  >¿Participa el grupo completo?</label
+                >
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="fechaInicio" class="form-label fw-bold text-success"
+                >Fecha y Hora de Inicio</label
+              >
+              <input
+                type="datetime-local"
+                th:field="*{fechaInicio}"
+                class="form-control border-success border-2"
+                id="fechaInicio"
+                required
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label for="fechaFin" class="form-label fw-bold text-danger"
+                >Fecha y Hora de Fin</label
+              >
+              <input
+                type="datetime-local"
+                th:field="*{fechaFin}"
+                class="form-control border-danger border-2"
+                id="fechaFin"
+                required
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label for="turno" class="form-label fw-bold text-primary"
+                >Turno Previsto</label
+              >
+              <select
+                th:field="*{turno}"
+                class="form-select border-primary border-2"
+                id="turno"
+              >
+                <option value="MATUTINO">Matutino</option>
+                <option value="VESPERTINO">Vespertino</option>
+                <option value="INTERTURNO">Interturno</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-5 d-flex justify-content-end gap-3 border-top pt-4">
+            <a th:href="@{/}" class="btn btn-outline-secondary px-4">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-liceo px-5 shadow">
+              <i class="bi bi-check-circle-fill"></i> Registrar en Agenda
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <script th:inline="javascript">
+      // Lógica para alternar entre selección de grupos o texto libre
+      function actualizarCamposDestinatarios() {
+        const ambito = document.getElementById("selectorAmbito").value;
+        const divGrupos = document.getElementById("divGrupos");
+        const divOtros = document.getElementById("divOtros");
+
+        if (ambito === "GRUPO") {
+          divGrupos.classList.remove("d-none");
+          divOtros.classList.add("d-none");
+        } else {
+          divGrupos.classList.add("d-none");
+          divOtros.classList.remove("d-none");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        actualizarCamposDestinatarios();
+        document
+          .getElementById("selectorAmbito")
+          .addEventListener("change", actualizarCamposDestinatarios);
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
