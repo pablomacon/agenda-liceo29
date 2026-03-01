@@ -34,6 +34,18 @@ public class Evento {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario creador;
 
+    // Agrega esto en los atributos
+    private String color;
+
+    // Agrega los Getters y Setters
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     // Constructores
     public Evento() {
     }

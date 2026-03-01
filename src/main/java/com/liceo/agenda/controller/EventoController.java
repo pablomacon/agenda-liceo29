@@ -134,6 +134,7 @@ public class EventoController {
             }
 
             map.put("extendedProps", props);
+            map.put("color", evento.getColor()); // <--- ESTA ES LA CLAVE
             return map;
         }).collect(Collectors.toList());
     }

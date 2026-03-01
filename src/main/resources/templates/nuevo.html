@@ -14,6 +14,26 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <link rel="stylesheet" th:href="@{/css/estilos.css}" />
+    <style>
+      /* Estilos para el selector de colores circular */
+      .color-circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid white;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+      }
+      .color-circle:hover {
+        transform: scale(1.1);
+      }
+      .color-circle.selected {
+        border-color: #212529;
+        transform: scale(1.15);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+    </style>
   </head>
   <body>
     <header class="navbar-institucional">
@@ -47,14 +67,14 @@
       </div>
     </header>
 
-    <main class="container mt-5">
-      <div class="card-calendario-wrapper">
+    <main class="container mt-5 mb-5">
+      <div class="card-calendario-wrapper shadow">
         <div class="p-4 border-bottom bg-light">
           <h2 class="h4 mb-0 text-verde">
             <i class="bi bi-calendar-plus-fill"></i> Registro de Nueva Actividad
           </h2>
           <p class="text-muted mb-0 small">
-            Complete todos los datos requeridos por la administración.
+            Complete los datos. Recuerde el acuerdo de colores institucional.
           </p>
         </div>
 
@@ -89,14 +109,12 @@
                 class="form-select border-2"
                 id="selectorAmbito"
               >
-                <option value="INSTITUCIONAL">
-                  🏛️ Institucional (Goyenadas, Fiestas)
-                </option>
-                <option value="DOCENTE">👨‍🏫 Docente (Reuniones, Coord.)</option>
-                <option value="GRUPAL">👥 Grupal (Actividad con Grupos)</option>
-                <option value="TALLER">🎨 Taller / Salida Didáctica</option>
-                <option value="ED_FISICA">⚽ Educación Física / Deporte</option>
-                <option value="EVALUACION">📝 Evaluación / Parciales</option>
+                <option value="INSTITUCIONAL">🏛️ Institucional</option>
+                <option value="DOCENTE">👨‍🏫 Docente</option>
+                <option value="GRUPAL">👥 Grupal</option>
+                <option value="TALLER">🎨 Taller / Salida</option>
+                <option value="ED_FISICA">⚽ Ed. Física</option>
+                <option value="EVALUACION">📝 Evaluación</option>
               </select>
             </div>
 
@@ -117,12 +135,12 @@
               </div>
               <div
                 class="p-3 border rounded bg-white"
-                style="max-height: 250px; overflow-y: auto"
+                style="max-height: 200px; overflow-y: auto"
               >
                 <div class="row">
                   <div class="col-6 border-end">
-                    <small class="text-muted d-block mb-2 fw-bold border-bottom"
-                      >Matutino (1° a 3°)</small
+                    <small class="text-muted d-block mb-2 fw-bold"
+                      >Matutino</small
                     >
                     <div
                       th:each="g : ${ {'7°1', '7°2', '7°3', '8°1', '8°2', '8°3', '9°1', '9°2', '9°3', '9°4'} }"
@@ -143,8 +161,8 @@
                     </div>
                   </div>
                   <div class="col-6">
-                    <small class="text-muted d-block mb-2 fw-bold border-bottom"
-                      >Vespertino (4° a 7°)</small
+                    <small class="text-muted d-block mb-2 fw-bold"
+                      >Vespertino</small
                     >
                     <div
                       th:each="g : ${ {'7°4', '7°5', '7°6', '8°4', '8°5', '8°6', '8°7', '9°5', '9°6', '9°7'} }"
@@ -177,35 +195,59 @@
                 name="inputOtros"
                 id="inputOtros"
                 class="form-control"
-                placeholder="Ej: Sala de Informática, APAL, Todos los docentes"
+                placeholder="Ej: Sala de Informática, APAL"
               />
             </div>
 
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="cantidad" class="form-label fw-bold"
-                  >Cantidad de Estudiantes</label
-                >
+              <label class="form-label fw-bold"
+                ><i class="bi bi-palette"></i> Color en Agenda</label
+              >
+              <div class="d-flex flex-wrap gap-2 mt-1">
                 <input
-                  type="number"
-                  th:field="*{cantidadEstudiantes}"
-                  class="form-control"
-                  id="cantidad"
-                  min="0"
-                  value="0"
+                  type="hidden"
+                  th:field="*{color}"
+                  id="colorSeleccionado"
                 />
+
+                <div
+                  class="color-circle selected"
+                  data-color="#3788d8"
+                  style="background-color: #3788d8"
+                  title="Azul (Estándar)"
+                ></div>
+                <div
+                  class="color-circle"
+                  data-color="#d50000"
+                  style="background-color: #d50000"
+                  title="Rojo (Institucional)"
+                ></div>
+                <div
+                  class="color-circle"
+                  data-color="#f4511e"
+                  style="background-color: #f4511e"
+                  title="Naranja"
+                ></div>
+                <div
+                  class="color-circle"
+                  data-color="#f6bf26"
+                  style="background-color: #f6bf26"
+                  title="Amarillo"
+                ></div>
+                <div
+                  class="color-circle"
+                  data-color="#0b8043"
+                  style="background-color: #0b8043"
+                  title="Verde"
+                ></div>
+                <div
+                  class="color-circle"
+                  data-color="#8e24aa"
+                  style="background-color: #8e24aa"
+                  title="Violeta"
+                ></div>
               </div>
-              <div class="form-check form-switch mt-4">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  th:field="*{participanTodos}"
-                  id="participanTodos"
-                />
-                <label class="form-check-label fw-bold" for="participanTodos"
-                  >¿Participa el grupo completo?</label
-                >
-              </div>
+              
             </div>
 
             <div class="col-md-4">
@@ -268,29 +310,37 @@
       const divOtros = document.getElementById("divOtros");
       const btnTodos = document.getElementById("btnTodos");
       const checks = document.querySelectorAll(".check-grupo");
+      const inputColor = document.getElementById("colorSeleccionado");
+      const colorCircles = document.querySelectorAll(".color-circle");
 
-      // Lógica para alternar campos según ámbito
+      // 1. Lógica para alternar campos según ámbito
       function actualizarCamposDestinatarios() {
         const val = selectorAmbito.value;
-        // Si es GRUPAL, ED_FISICA o EVALUACION, mostramos la lista de grupos
         if (val === "GRUPAL" || val === "ED_FISICA" || val === "EVALUACION") {
           divGrupos.classList.remove("d-none");
           divOtros.classList.add("d-none");
         } else {
-          // Si es Institucional o Docente, permitimos texto libre
           divGrupos.classList.add("d-none");
           divOtros.classList.remove("d-none");
         }
       }
 
-      // Lógica del botón "Marcar Todos"
+      // 2. Lógica del botón "Marcar Todos"
       btnTodos.addEventListener("click", function () {
-        // Verificamos si ya hay alguno marcado para decidir si marcar o desmarcar todos
         const algunoMarcado = Array.from(checks).some((c) => c.checked);
         checks.forEach((c) => (c.checked = !algunoMarcado));
         this.innerHTML = !algunoMarcado
           ? '<i class="bi bi-x-square"></i> Desmarcar todos'
           : '<i class="bi bi-check-all"></i> Marcar todos';
+      });
+
+      // 3. Lógica para el selector de colores
+      colorCircles.forEach((circle) => {
+        circle.addEventListener("click", function () {
+          colorCircles.forEach((c) => c.classList.remove("selected"));
+          this.classList.add("selected");
+          inputColor.value = this.getAttribute("data-color");
+        });
       });
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -299,6 +349,12 @@
           "change",
           actualizarCamposDestinatarios,
         );
+
+        // Inicializar el color con el que esté marcado como 'selected' por defecto
+        const defaultColor = document
+          .querySelector(".color-circle.selected")
+          .getAttribute("data-color");
+        inputColor.value = defaultColor;
       });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
