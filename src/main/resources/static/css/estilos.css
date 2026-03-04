@@ -201,7 +201,14 @@ body {
   border-bottom: 4px solid var(--amarillo-liceo);
   padding: 15px !important;
 }
+/* Ajuste para que los campos de texto del formulario respiren mejor */
+#formEvento .form-control {
+  margin-bottom: 5px;
+}
 
+#formEvento label {
+  margin-bottom: 3px;
+}
 /* =========================================
    OPTIMIZACIÓN PARA CELULARES (Mobile First)
    ========================================= */

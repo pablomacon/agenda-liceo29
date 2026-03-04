@@ -99,7 +99,19 @@
                 required
               />
             </div>
-
+            <div class="col-md-4">
+              <label for="lugar" class="form-label fw-bold"
+                >Lugar / Salón</label
+              >
+              <input
+                type="text"
+                th:field="*{lugar}"
+                class="form-control border-2"
+                id="lugar"
+                placeholder="Ej: Salón de Actos, Laboratorio"
+              />
+              <small class="text-muted">Opcional</small>
+            </div>
             <div class="col-md-4">
               <label for="selectorAmbito" class="form-label fw-bold"
                 >Ámbito</label
@@ -247,7 +259,6 @@
                   title="Violeta"
                 ></div>
               </div>
-              
             </div>
 
             <div class="col-md-4">

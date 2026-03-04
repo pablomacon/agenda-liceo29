@@ -29,6 +29,16 @@ public class Evento {
     private String turno;
     private Integer cantidadEstudiantes;
     private boolean participanTodos;
+    private String lugar; // Atributo para el lugar de la actividad
+
+    // Getter y Setter para el lugar
+    public String getLugar() {
+        return lugar;
+    }
+
+    public void setLugar(String lugar) {
+        this.lugar = lugar;
+    }
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

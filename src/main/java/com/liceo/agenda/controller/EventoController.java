@@ -112,6 +112,7 @@ public class EventoController {
             Map<String, Object> props = new HashMap<>();
             props.put("destinatarios", evento.getDestinatarios());
             props.put("ambito", evento.getAmbito());
+            props.put("lugar", evento.getLugar()); // <-- AGREGAR ESTA LÍNEA
 
             if (evento.getCreador() != null) {
                 props.put("usuarioId", evento.getCreador().getId());
